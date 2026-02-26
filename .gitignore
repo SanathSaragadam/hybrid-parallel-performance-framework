@@ -39,3 +39,30 @@
 
 # debug information files
 *.dwo
+
+# build
+build/
+*.o
+*.out
+*.exe
+
+# results / logs
+results/*
+logs/
+*.log
+*.csv
+*.json
+*.png
+*.pdf
+
+# python
+__pycache__/
+*.pyc
+.venv/
+
+# editors
+.vscode/
+.idea/
+
+# OS
+.DS_Store
