@@ -1,5 +1,6 @@
 # Task Graph (DAG)
 
+## Tasks
 T0: Read/Generate Input (I/O)
 T1: Create Task List (batch items / tiles)
 T2: Distribute Tasks (MPI communication)
