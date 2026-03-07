@@ -1,10 +1,19 @@
 # hybrid-parallel-performance-framework
-# Hybrid MPI+OpenMP Performance Analytics Framework (Cloud-Integrated)
+# Hybrid-Parallel-Causal-Modeling-Framework-for-Regression-Data-Analytics (Cloud-Integrated)
 
 ## Goal
-Build and evaluate a hybrid parallel framework (MPI + OpenMP) with multiple execution models,
-domain decompositions, and I/O strategies, instrumented with profiling tools (Caliper, optional PAPI).
-Publish experiment results via a cloud pipeline (AWS S3 + dashboard) with CI/CD + IaC.
+
+Build a hybrid MPI+OpenMP framework that:
+
+partitions a regression dataset into chunks
+
+builds local causal DAGs from each chunk
+
+merges local DAGs into a global causal graph
+
+evaluates performance, scalability, and merge behavior
+
+
 
 ## Key Deliverables
 - Task graph + execution model (workpool / producer-consumer)
