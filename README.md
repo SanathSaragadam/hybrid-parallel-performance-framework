@@ -30,3 +30,8 @@ evaluates performance, scalability, and merge behavior
 - `terraform/` AWS infra (S3 + optional DynamoDB/Lambda)
 - `dashboard/` visualization UI
 - `report/`, `presentation/` final deliverables
+
+## Visualization Features
+- Correlation heatmap for dataset analysis
+- Chunk-level edge distribution analysis
+- Global DAG edge frequency visualization
