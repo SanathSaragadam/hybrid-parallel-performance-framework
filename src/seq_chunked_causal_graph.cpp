@@ -6,6 +6,7 @@
 #include <cmath>
 #include <chrono>
 #include <iomanip>
+#include <filesystem>
 
 using namespace std;
 
@@ -30,12 +31,42 @@ double correlation(const vector<double>& x, const vector<double>& y) {
     return numerator / denominator;
 }
 
-int main() {
-    auto start = chrono::high_resolution_clock::now();
+vector<string> split_csv_line(const string& line) {
+    vector<string> result;
+    string value;
+    stringstream ss(line);
 
-    ifstream file("data/california_housing.csv");
+    while (getline(ss, value, ',')) {
+        result.push_back(value);
+    }
+
+    return result;
+}
+
+string dataset_tag_from_path(const string& path) {
+    size_t slash = path.find_last_of("/\\");
+    string filename = (slash == string::npos) ? path : path.substr(slash + 1);
+
+    size_t dot = filename.find_last_of('.');
+    if (dot != string::npos) {
+        filename = filename.substr(0, dot);
+    }
+
+    return filename;
+}
+
+int main(int argc, char* argv[]) {
+    if (argc < 2) {
+        cerr << "Usage: " << argv[0] << " <dataset_csv_path>\n";
+        return 1;
+    }
+
+    string dataset_path = argv[1];
+    string dataset_tag = dataset_tag_from_path(dataset_path);
+
+    ifstream file(dataset_path);
     if (!file.is_open()) {
-        cerr << "Error: could not open data/california_housing.csv\n";
+        cerr << "Error: could not open " << dataset_path << "\n";
         return 1;
     }
 
@@ -44,21 +75,16 @@ int main() {
     vector<vector<double>> data;
 
     if (getline(file, line)) {
-        stringstream ss(line);
-        string col;
-        while (getline(ss, col, ',')) {
-            headers.push_back(col);
-        }
+        headers = split_csv_line(line);
     }
 
     while (getline(file, line)) {
-        stringstream ss(line);
-        string value;
+        vector<string> tokens = split_csv_line(line);
         vector<double> row;
 
-        while (getline(ss, value, ',')) {
+        for (const auto& token : tokens) {
             try {
-                row.push_back(stod(value));
+                row.push_back(stod(token));
             } catch (...) {
                 row.push_back(0.0);
             }
@@ -83,35 +109,38 @@ int main() {
     int num_chunks = (rows + chunk_size - 1) / chunk_size;
     double threshold = 0.6;
 
+    filesystem::create_directories("results/local_dags");
+    filesystem::create_directories("results/metrics");
+
+    cout << "Dataset: " << dataset_tag << "\n";
     cout << "Rows: " << rows << "\n";
     cout << "Columns: " << cols << "\n";
     cout << "Chunk size: " << chunk_size << "\n";
-    cout << "Number of chunks: " << num_chunks << "\n\n";
+    cout << "Chunks: " << num_chunks << "\n\n";
 
-    ofstream summary_out("results/sample/chunk_summary.txt");
+    string summary_file = "results/metrics/" + dataset_tag + "_chunk_summary.txt";
+    ofstream summary_out(summary_file);
+
     if (!summary_out.is_open()) {
-        cerr << "Error: could not open chunk summary file.\n";
+        cerr << "Error: could not open summary output file.\n";
         return 1;
     }
+
+    auto start = chrono::high_resolution_clock::now();
 
     for (int chunk = 0; chunk < num_chunks; chunk++) {
         int start_row = chunk * chunk_size;
         int end_row = min(start_row + chunk_size, rows);
 
-        string edge_filename = "results/sample/chunk_" + to_string(chunk) + "_edges.txt";
-        string dot_filename  = "results/sample/chunk_" + to_string(chunk) + ".dot";
+        string edge_file =
+            "results/local_dags/" + dataset_tag + "_chunk_" + to_string(chunk) + "_edges.txt";
 
-        ofstream edge_out(edge_filename);
-        ofstream dot_out(dot_filename);
+        ofstream edge_out(edge_file);
 
-        if (!edge_out.is_open() || !dot_out.is_open()) {
-            cerr << "Error: could not open output file for chunk " << chunk << "\n";
+        if (!edge_out.is_open()) {
+            cerr << "Error: could not open edge file for chunk " << chunk << "\n";
             return 1;
         }
-
-        dot_out << "digraph Chunk" << chunk << " {\n";
-        dot_out << "    rankdir=LR;\n";
-        dot_out << "    node [shape=box, style=filled, fillcolor=lightyellow];\n";
 
         int edge_count = 0;
 
@@ -120,41 +149,43 @@ int main() {
                 vector<double> xi, xj;
 
                 for (int r = start_row; r < end_row; r++) {
-                    xi.push_back(data[r][i]);
-                    xj.push_back(data[r][j]);
+                    if (i < (int)data[r].size() && j < (int)data[r].size()) {
+                        xi.push_back(data[r][i]);
+                        xj.push_back(data[r][j]);
+                    }
                 }
+
+                if (xi.empty() || xj.empty()) continue;
 
                 double corr = correlation(xi, xj);
 
                 if (fabs(corr) >= threshold) {
                     edge_out << headers[i] << " -> " << headers[j]
                              << "   corr = " << fixed << setprecision(4) << corr << "\n";
-
-                    dot_out << "    \"" << headers[i] << "\" -> \"" << headers[j] << "\";\n";
-
                     edge_count++;
                 }
             }
         }
 
-        dot_out << "}\n";
         edge_out.close();
-        dot_out.close();
 
         summary_out << "Chunk " << chunk
-                    << ": rows " << start_row << "-" << end_row - 1
+                    << ": rows " << start_row << "-" << (end_row - 1)
                     << ", edges detected = " << edge_count << "\n";
 
-        cout << "Chunk " << chunk << " completed, edges detected = " << edge_count << "\n";
+        cout << "Chunk " << chunk
+             << " completed, edges detected = " << edge_count << "\n";
     }
 
     auto end = chrono::high_resolution_clock::now();
     double exec_time = chrono::duration<double>(end - start).count();
 
-    summary_out << "\nTotal execution time: " << fixed << setprecision(6) << exec_time << " sec\n";
+    summary_out << "\nExecution Time (sec): "
+                << fixed << setprecision(6) << exec_time << "\n";
     summary_out.close();
 
-    cout << "\nChunk-based DAG generation complete.\n";
+    cout << "\nChunked DAG complete for " << dataset_tag << "\n";
+    cout << "Summary file: " << summary_file << "\n";
     cout << "Execution Time: " << fixed << setprecision(6) << exec_time << " seconds\n";
 
     return 0;
