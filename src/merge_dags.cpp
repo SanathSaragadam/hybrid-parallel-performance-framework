@@ -1,12 +1,19 @@
 #include <iostream>
 #include <fstream>
-#include <sstream>
 #include <string>
 #include <map>
 #include <vector>
 #include <iomanip>
 
 using namespace std;
+
+string extract_edge_only(const string& line) {
+    size_t corr_pos = line.find("   corr");
+    if (corr_pos != string::npos) {
+        return line.substr(0, corr_pos);
+    }
+    return line;
+}
 
 int main() {
     vector<string> chunk_files = {
@@ -22,13 +29,14 @@ int main() {
     for (const string& filename : chunk_files) {
         ifstream file(filename);
         if (!file.is_open()) {
-            continue; // skip missing chunk files
+            continue;
         }
 
         string line;
         while (getline(file, line)) {
             if (!line.empty()) {
-                edge_frequency[line]++;
+                string edge_only = extract_edge_only(line);
+                edge_frequency[edge_only]++;
             }
         }
 
@@ -52,24 +60,18 @@ int main() {
     cout << "Merged Global DAG Edges:\n";
 
     for (const auto& entry : edge_frequency) {
-        string full_edge = entry.first;
+        string edge_only = entry.first;
         int freq = entry.second;
 
-        // Keep edges appearing in at least 2 chunks
         if (freq >= 2) {
-            edge_out << full_edge << "   freq = " << freq << "\n";
-            cout << full_edge << "   freq = " << freq << "\n";
-
-            // Extract only the edge part before "corr ="
-            size_t corr_pos = full_edge.find("   corr");
-            string edge_only = (corr_pos != string::npos) ? full_edge.substr(0, corr_pos) : full_edge;
+            edge_out << edge_only << "   freq = " << freq << "\n";
+            cout << edge_only << "   freq = " << freq << "\n";
 
             size_t arrow_pos = edge_only.find("->");
             if (arrow_pos != string::npos) {
                 string left = edge_only.substr(0, arrow_pos);
                 string right = edge_only.substr(arrow_pos + 2);
 
-                // trim spaces
                 while (!left.empty() && left.front() == ' ') left.erase(0, 1);
                 while (!left.empty() && left.back() == ' ') left.pop_back();
                 while (!right.empty() && right.front() == ' ') right.erase(0, 1);
