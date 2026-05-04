@@ -1,0 +1,102 @@
+Loading dataset...
+
+================ DATASET SHAPE ================
+(231238, 35)
+
+================ COLUMNS ================
+1. cores_alloc_layout | str
+2. cores_allocated | str
+3. cores_per_task | int64
+4. derived_ec | str
+5. eligible_time | datetime64[us, UTC]
+6. end_time | datetime64[us, UTC]
+7. group_id | int64
+8. job_id | int64
+9. job_state | str
+10. nodes | object
+11. num_cores_req | int64
+12. num_cores_alloc | int64
+13. num_nodes_req | int64
+14. num_nodes_alloc | int64
+15. num_tasks | float64
+16. partition | str
+17. priority | int64
+18. qos | str
+19. req_nodes | str
+20. req_switch | int64
+21. run_time | int64
+22. shared | str
+23. start_time | datetime64[us, UTC]
+24. state_reason | str
+25. submit_time | datetime64[us, UTC]
+26. threads_per_core | float64
+27. time_limit | int64
+28. num_gpus_req | int64
+29. num_gpus_alloc | int64
+30. mem_req | int64
+31. mem_alloc | int64
+32. user_id | int64
+33. node_power_consumption | object
+34. mem_power_consumption | object
+35. cpu_power_consumption | object
+
+================ FIRST 5 ROWS ================
+                                  cores_alloc_layout  ...                              cpu_power_consumption
+0  {900: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 1...  ...  [948, 1628, 1650, 1544, 1260, 1532, 1418, 1700...
+1  {687: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 1...  ...  [1640, 1604, 1592, 1364, 1532, 1508, 1528, 147...
+2  {687: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 1...  ...  [1654, 1600, 1606, 1438, 1506, 1108, 1496, 167...
+3                    {416: [0, 1, 2, 3, 4, 5, 6, 7]}  ...  [108, 182, 178, 182, 190, 174, 188, 186, 190, ...
+4                    {416: [0, 1, 2, 3, 4, 5, 6, 7]}  ...  [82, 182, 178, 180, 170, 168, 168, 192, 196, 1...
+
+[5 rows x 35 columns]
+
+================ NUMERIC COLUMNS ================
+cores_per_task
+group_id
+job_id
+num_cores_req
+num_cores_alloc
+num_nodes_req
+num_nodes_alloc
+num_tasks
+priority
+req_switch
+run_time
+threads_per_core
+time_limit
+num_gpus_req
+num_gpus_alloc
+mem_req
+mem_alloc
+user_id
+
+Total numeric columns: 18
+
+================ MISSING VALUES ================
+threads_per_core    230334
+req_nodes           204942
+num_tasks             9457
+dtype: int64
+
+================ BASIC STATS ================
+                     count          mean  ...         75%         max
+cores_per_task    231238.0  1.673361e+01  ...       32.00       128.0
+group_id          231238.0  2.521080e+04  ...    25200.00     53925.0
+job_id            231238.0  3.121015e+06  ...  4683625.25   6242697.0
+num_cores_req     231238.0  3.539646e+02  ...      128.00     32768.0
+num_cores_alloc   231238.0  4.309957e+02  ...      128.00     32768.0
+num_nodes_req     231238.0  4.209676e+00  ...        2.00       256.0
+num_nodes_alloc   231238.0  4.213062e+00  ...        2.00       256.0
+num_tasks         221781.0  4.125132e+01  ...       32.00     32768.0
+priority          231238.0  1.837223e+05  ...   263148.00  10255456.0
+req_switch        231238.0  5.621913e-05  ...        0.00         1.0
+run_time          231238.0  5.985564e+03  ...     2146.00    125311.0
+threads_per_core     904.0  1.057522e+00  ...        1.00         4.0
+time_limit        231238.0  7.087065e+02  ...     1440.00      1440.0
+num_gpus_req      231238.0  1.451673e+01  ...        4.00      1024.0
+num_gpus_alloc    231238.0  1.500461e+01  ...        4.00      1024.0
+mem_req           231238.0  6.960486e+02  ...      240.00     61500.0
+mem_alloc         231238.0  8.274393e+02  ...      332.00     61500.0
+user_id           231238.0  6.689200e+02  ...     1205.00      1743.0
+
+[18 rows x 8 columns]
