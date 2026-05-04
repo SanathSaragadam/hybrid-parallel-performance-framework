@@ -1,19 +1,18 @@
-# Task Graph (DAG)
+# Task Flow / DAG
 
-## Tasks
+## Main Tasks
 
-T0: Load regression dataset (I/O)
+T0: Load PM100 / F-DATA dataset 
+T1: Preprocess data and select useful numeric/system features 
+T2: Partition dataset into chunks 
+T3: Run NOTEARS on each chunk 
+T4: Generate local DAGs 
+T5: Aggregate and merge local DAGs 
+T6: Filter weak relations 
+T7: Generate global DAG and causal chain views 
+T8: Run scaling experiments 
+T9: Generate report and presentation visuals 
 
-T1: Partition dataset into chunks
+## Dependencies
 
-T2: Construct local causal DAG per chunk using regression relationships
-
-T3: Extract dependency edges between variables
-
-T4: Merge local DAGs into a global causal graph
-
-T5: Export causal graph and performance metrics
-
-## Dependencies (DAG)
-
-T0 → T1 → T2 → T3 → T4 → T5
+T0 → T1 → T2 → T3 → T4 → T5 → T6 → T7 → T8 → T9
