@@ -24,3 +24,8 @@ The system is designed to:
 5. Stability-aware global DAG merge
 6. Validation and interpretation
 7. Scaling experiments
+
+## Dataset
+The main dataset direction is **PM100**, an HPC job power consumption dataset available on Zenodo.
+
+Dataset link: https://zenodo.org/records/10127767
