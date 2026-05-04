@@ -1,37 +1,26 @@
-# hybrid-parallel-performance-framework
-# Hybrid-Parallel-Causal-Modeling-Framework-for-Regression-Data-Analytics (Cloud-Integrated)
+# Scalable NOTEARS-Based Causal Discovery Framework for HPC Performance and Energy Analytics
 
-## Goal
+This project builds a scalable causal discovery framework for structured performance datasets.
 
-Build a hybrid MPI+OpenMP framework that:
+The system is designed to:
+- preprocess real-world HPC datasets
+- partition data into chunks
+- run NOTEARS-based causal discovery on each chunk
+- generate local DAGs
+- merge local DAGs into a stable global causal graph
+- analyze runtime, energy, and resource relationships
+- evaluate scaling behavior across dataset size and chunk size
 
-partitions a regression dataset into chunks
+## Dataset Direction
+- Prototype / earlier experiments: California Housing, Insurance
+- Main project dataset: PM100 or F-DATA from Zenodo
+- Scaling dataset: HPC / performance-oriented large datasets
 
-builds local causal DAGs from each chunk
-
-merges local DAGs into a global causal graph
-
-evaluates performance, scalability, and merge behavior
-
-
-
-## Key Deliverables
-- Task graph + execution model (workpool / producer-consumer)
-- Hybrid parallelism: MPI + OpenMP
-- Performance measurement: timing + Caliper/TAU/HPCToolkit
-- Analysis: correctness, compute/comm/I/O breakdown, scalability metrics, comparisons across models/decompositions/I/O
-- Code + report + presentation
-
-## Repo Structure
-- `src/` MPI+OpenMP application
-- `scripts/` experiment runners + parsing + plotting
-- `docs/` design notes + weekly updates
-- `results/` generated results (ignored); `results/sample/` stores tiny example outputs
-- `terraform/` AWS infra (S3 + optional DynamoDB/Lambda)
-- `dashboard/` visualization UI
-- `report/`, `presentation/` final deliverables
-
-## Visualization Features
-- Correlation heatmap for dataset analysis
-- Chunk-level edge distribution analysis
-- Global DAG edge frequency visualization
+## Core Workflow
+1. Dataset preprocessing and feature selection
+2. Chunk partitioning
+3. NOTEARS causal discovery on each chunk
+4. Local DAG generation
+5. Stability-aware global DAG merge
+6. Validation and interpretation
+7. Scaling experiments

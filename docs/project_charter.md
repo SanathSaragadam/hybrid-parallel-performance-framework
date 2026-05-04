@@ -1,50 +1,47 @@
-# Project Charter (Week 1)
+
+# Project Charter
 
 ## Project Title
-Hybrid MPI+OpenMP Framework for Distributed Causal Graph Construction on Regression Data
+Scalable NOTEARS-Based Causal Discovery Framework for HPC Performance and Energy Analytics
 
 ## Objective
-Design and evaluate a hybrid parallel framework using MPI and OpenMP to analyze
-large-scale regression datasets and construct causal graphs.
+Design and implement a scalable causal discovery framework using NOTEARS on large structured datasets.
 
-The system partitions a dataset into multiple chunks across distributed processes.
-Each chunk independently builds a local causal Directed Acyclic Graph (DAG) based
-on regression relationships. These local DAGs are then merged into a global causal
-graph representing the overall dependencies in the dataset.
+The system will:
+- preprocess HPC-oriented datasets
+- partition the dataset into chunks
+- run NOTEARS on each chunk to identify local DAGs
+- merge local DAGs into a stable global DAG
+- analyze causal relationships among runtime, energy, power, thread count, and other system metrics
+- evaluate scalability with respect to dataset size and chunk size
 
-The framework will support multiple execution models, data partitioning strategies,
-and I/O methods, while also collecting detailed performance metrics to analyze
-scalability and system efficiency.
+## Main Dataset Direction
+- PM100 dataset from Zenodo
+- F-DATA dataset from Zenodo
 
 ## Research Questions
-1. How does distributing regression data into chunks affect the accuracy and
-   consistency of local causal DAG construction?
+1. Which variables causally affect runtime?
+2. Which variables causally affect energy and power usage?
+3. How stable are causal edges across chunks?
+4. How does NOTEARS behave under chunk-based execution?
+5. How does runtime change with dataset size and chunk size?
 
-2. How do different DAG merging strategies influence the structure and stability
-   of the global causal graph?
+## Deliverables
+- preprocessing pipeline
+- NOTEARS-based local DAG discovery
+- chunk-based local DAG generation
+- global DAG merge
+- filtered DAG view
+- causal chain visualization
+- runtime scaling analysis
+- chunk-size scaling analysis
+- final report and presentation
 
-3. How do execution models (static partition vs dynamic workpool) affect
-   scalability and load balancing in distributed causal graph construction?
-
-4. How do dataset partitioning strategies affect communication overhead
-   and parallel efficiency?
-
-## Performance Metrics
-- Wall clock time
-- Compute / Communication / I/O time breakdown
-- Speedup
-- Parallel efficiency
-- Efficiency loss (1 - efficiency)
-- Throughput (chunks processed per second)
-- Memory usage
-- (Optional) Cache miss rate via PAPI
-
-## Experimental Variables
-- MPI ranks
-- OpenMP threads
-- Dataset size
-- Chunk size
-- Execution model
-- Partition strategy
-- DAG merging strategy
-- I/O strategy
+## Planned Output Graphs
+- full causal graph
+- filtered causal graph
+- causal chain explanation graph
+- local chunk DAGs
+- runtime vs dataset size
+- runtime vs chunk size
+- validation and interpretation visuals
